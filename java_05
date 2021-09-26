@@ -55,7 +55,6 @@ class Sub extends Base{
 
 
 package polymorphic.detail;
-
 // 动态绑定机制！！！！！
 public class DynamicBinding {
     public static void main(String[] args) {
@@ -100,7 +99,7 @@ class B extends A{
 
 
 
-
+// instanceOf方法的使用
 package polymorphic.detail;
 
 public class Test_instanceOf {
@@ -200,6 +199,8 @@ public class Teacher extends Person{
     }
 }
 
+
+//  多态数组  ....
 package polymorphic.polyarr_;
 
 public class Test {
@@ -335,6 +336,8 @@ public class Test {
 
 
 
+// Object类中的常用的几个方法的使用与重写
+// equals
 package polymorphic.object_;
 
 public class Equals01 {
@@ -436,6 +439,7 @@ class Person2{
 
 
 
+// toString
 package polymorphic.object_;
 
 public class ToString {
@@ -470,35 +474,28 @@ class Monster{
 }
 
 
+// finalize
 package polymorphic.object_;
 
-public class ToString {
-    public static void main(String[] args) {
-        Monster m1 = new Monster("小妖怪","巡山的",3000);
-        System.out.println(m1.toString());
+import javax.sound.midi.Soundbank;
 
-        System.out.println("=====当直接输出一个对象时，会默认调用toString方法=====");
-        // 没有重写toString方法时，调用父类的，没有再找，一直到Object类（输出 包类名+地址）
-        System.out.println(m1);//  输出 Monster{name='小妖怪', job='巡山的', salary=3000.0}
+// 演示finalize的使用
+public class Finalize {
+    public static void main(String[] args) {
+        Car car = new Car("宝马");
+        car = null;// 这时car对象就是一个垃圾，垃圾回收器会将其回收（销毁）对象
+        // 在销毁对象前，会调用finalize方法,写自己的业务逻辑代码（释放资源：数据库连接，或者打开文件....）
+        // 如果不重写，就调用Object类中的
     }
 }
-class Monster{
-    private  String name;
-    private String job;
-    private double salary;
+class Car{
+    private String name;
 
-    // 使用快捷键生成 toString方法
-    @Override
-    public String toString() {
-        return "Monster{" +
-                "name='" + name + '\'' +
-                ", job='" + job + '\'' +
-                ", salary=" + salary +
-                '}';
-    }
-    public Monster(String name, String job, double salary) {
+    public Car(String name) {
         this.name = name;
-        this.job = job;
-        this.salary = salary;
+    }
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println("我们销毁了汽车"+ name);
     }
 }
