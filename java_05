@@ -1,0 +1,504 @@
+package polymorphic.detail;
+
+import com.wsc1.B;
+
+public class Test {
+    public static void main(String[] args) {
+//        // 向上转型：父类引用指向子类对象
+//        Animal animal = new Cat();//
+//        Object object = new Cat();//
+//        // 这里的animal可以调用父类的所有成员(遵守访问权限)
+//        // 不能调用子类特殊的成员
+//        // 编译类型是Animal,在编译阶段，能调用哪些成员，由编译类型决定
+//        // 最终运行效果看子类（运行类型）的具体实现，即调用方法时，从子类开始查找
+//        //animal.eat();// 对
+//        //animal.catchMouse();// 错
+//        animal.eat();//猫吃鱼~~~
+//        animal.run();//跑~~~
+//        animal.sleep();//睡~~~
+//        animal.show();//hello 你好~~~
+//
+//        // 向下转型
+//        Cat cat = (Cat) animal;
+//        cat.catchMouse();
+
+//        // 属性没有重写之说，直接看编译类型
+//        Base base = new Sub();// 向上转型
+//        System.out.println(base.count);// 10
+//        Sub sub = new Sub();
+//        System.out.println(sub.count);// 20
+
+        // 多态练习：
+        Sub s = new Sub();
+        System.out.println(s.count);// 20
+        s.display();// 20
+        Base b = s;
+        System.out.println(s == b);// true
+        System.out.println(b.count);// 10
+        b.display();// 20
+    }
+}
+class Base{
+    int count = 10;
+    public void     display(){
+        System.out.println(this.count);
+    }
+}
+class Sub extends Base{
+    int count = 20;
+    public void display(){
+        System.out.println(this.count);
+    }
+}
+
+
+
+
+package polymorphic.detail;
+
+// 动态绑定机制！！！！！
+public class DynamicBinding {
+    public static void main(String[] args) {
+        A a = new B();
+        System.out.println(a.sum());// 40
+        System.out.println(a.sum1());// 30
+
+        // 如果将子类的sum方法注释掉：
+        System.out.println(a.sum());// 30
+        /* 动态绑定机制 :
+        1.当调用对象方法时，该方法会和对象的内存地址/运行类型绑定
+        2.当调用对象属性时，没有动态绑定机制，哪里声明，哪里使用
+         */
+        // 如果将子类的sum1方法注释掉：
+        System.out.println(a.sum1());// 20
+    }
+}
+class A{
+    public int i = 10;
+    public int sum(){
+        return get() + i;// 调用子类的get() = 20 + 10 = 30
+    }
+    public int sum1(){
+        return i + 10;
+    }
+    public int get(){
+        return i ;
+    }
+}
+class B extends A{
+    public int i = 20;
+//    public int sum(){
+//        return 20 + i;
+//    }
+//    public int sum1(){
+//        return i + 10;
+//    }
+    public int get(){
+        return i ;
+    }
+}
+
+
+
+
+package polymorphic.detail;
+
+public class Test_instanceOf {
+    public static void main(String[] args) {
+        // instanceOf : 比较操作符，用于判断对象的运行类型是否是XX型 或者是XX型的子类型
+        BB bb = new BB();
+        System.out.println(bb instanceof BB);// true
+        System.out.println(bb instanceof AA);// true
+
+        AA aa  = new BB();
+        System.out.println(aa instanceof AA);// true
+        System.out.println(aa instanceof BB);// true
+
+        Object object = new Object();
+        System.out.println(object instanceof AA);// false
+        String str = "hello";
+        System.out.println(str instanceof Object);// true
+
+    }
+}
+class AA{}
+class BB extends AA{}
+
+
+package polymorphic.polyarr_;
+public class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public String say(){
+        return name + "\t" + age;
+    }
+}
+
+package polymorphic.polyarr_;
+
+public class Student extends Person{
+    private double score;
+    public Student(String name, int age, double score) {
+        super(name, age);
+        this.score = score;
+    }
+    public double getScore() {
+        return score;
+    }
+    public void setScore(double score) {
+        this.score = score;
+    }
+    // 重写父类say方法
+    @Override
+    public String say() {
+        return super.say() + " score="+score;
+    }
+    public void study(){
+        System.out.println("学生 "+ getName()+"正在学java....");
+    }
+}
+
+package polymorphic.polyarr_;
+
+public class Teacher extends Person{
+    private double salary;
+    public Teacher(String name, int age, double salary) {
+        super(name, age);
+        this.salary = salary;
+    }
+    public double getSalary() {
+        return salary;
+    }
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+    // 重写父类say方法
+    @Override
+    public String say() {
+        return super.say()+" salary="+salary;
+    }
+    public void teach(){
+        System.out.println("老师 "+ getName()+"正在讲java....");
+    }
+}
+
+package polymorphic.polyarr_;
+
+public class Test {
+    public static void main(String[] args) {
+        // 创建1个Person对象，2个Student对象，2个Teacher对象
+        // 统一放在数组中，并调用每个对象的say方法
+        Person[] persons = new Person[5];
+        persons[0] = new Person("jack",20);
+        persons[1] = new Student("jack",18,100);
+        persons[2] = new Student("smith",18,34.5);
+        persons[3] = new Teacher("wang",34,5000);
+        persons[4] = new Teacher("wu",40,5500);
+
+        for (int i = 0; i < persons.length; i++) {
+            System.out.println( persons[i].say());
+            if(persons[i] instanceof Student){
+                ((Student)persons[i]).study();
+            }else if(persons[i] instanceof Teacher){
+                ((Teacher)persons[i]).teach();
+            }
+            else if(persons[i] instanceof Person){
+            }else {
+                System.out.println("类型有误......");
+            }
+        }
+    }
+}
+
+
+
+
+
+package polymorphic.polyparameter;
+
+public class Employee{
+    // 定义员工类Employee，包含姓名和月工资[private]，以及计算年工资getAnnual的方法。
+    private String name;
+    private double salary;
+    public Employee(String name, double salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public double getSalary() {
+        return salary;
+    }
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+    public double getAnnual(){
+        return 12 * salary;
+    }
+}
+
+
+package polymorphic.polyparameter;
+
+public class Manager extends Employee{
+    // 普通员工和经理继承了员工，经理类多了奖金bonus属性和管理manage方法
+    private double bonus;
+
+    public Manager(String name, double salary, double bonus) {
+        super(name, salary);
+        this.bonus = bonus;
+    }
+    public double getBonus() {
+        return bonus;
+    }
+    public void setBonus(double bonus) {
+        this.bonus = bonus;
+    }
+
+    @Override
+    public double getAnnual() {
+        return super.getAnnual()+bonus;
+    }
+    public void manage(){
+        System.out.println("管理者 "+getName()+"正在管理.....");
+    }
+
+}
+
+
+package polymorphic.polyparameter;
+
+public class Worker extends Employee{
+    public Worker(String name, double salary) {
+        super(name, salary);
+    }
+    // 普通员工类多了work方法，普通员工和经理类要求分别重写getAnnual方法
+    public void work(){
+        System.out.println("员工 "+getName()+"正在工作.....");
+    }
+    @Override
+    public double getAnnual() {
+        return super.getAnnual();
+    }
+}
+
+package polymorphic.polyparameter;
+
+public class Test {
+    public static void main(String[] args) {
+        Worker tom = new Worker("tom",5000);
+        Manager milan = new Manager("milan", 8000, 150000);
+        Test t = new Test();
+        t.showEmployee(tom);
+        t.showEmployee(milan);
+        t.testWork(tom);
+        t.testWork(milan);
+    }
+    /*
+测试类中添加一个方法showEmployee(Employee e)，实现获取任何员工对象的年工资,并在main方法中调用该方法
+测试类中添加一个方法，testWork,如果是普通员工，则调用work方法，如果是经理,则调用manage方法
+  */
+    public void showEmployee(Employee e){
+        System.out.println(e.getAnnual());
+    }
+    public void testWork(Employee e){
+        if(e instanceof Worker){
+            ((Worker)e).work();
+        }else if(e instanceof Manager){
+            ((Manager)e).manage();
+        }
+    }
+}
+
+
+
+
+package polymorphic.object_;
+
+public class Equals01 {
+    public static void main(String[] args) {
+        // == 既可以判断基本类型的数值是否相等，也可以判断引用类型
+        // equals 判断引用类型，即是否指向同一对象，地址是否相等
+        A a = new A();
+        A b = a;
+        A c = a;
+        System.out.println(a == c);// true
+        int num1 = 10;
+        double num2 = 10.0;
+        System.out.println(num1 == num2);// true
+
+        Integer integer1 = new Integer("1000");
+        Integer integer2 = new Integer("1000");
+        System.out.println(integer1 == integer2);// false : 指向的分别是两个对象
+        System.out.println(integer1.equals(integer2));// true : （Integer里面的equals重写了，判断数值是否相等）
+    }
+}
+class A{}
+
+
+package polymorphic.object_;
+
+public class Equals_exercise {
+    public static void main(String[] args) {
+        Person person1 = new Person("jack", 23, '男');
+        Person person2 = new Person("jack", 23, '男');
+        // 重写之前，比较的是两个对象的地址是否相等，返回false
+        System.out.println(person1.equals(person2));// false
+        // 重写equals ,返回true
+    }
+}
+class Person{
+    private String name;
+    private int age;
+    private char gender;
+    // 重写equals
+    public boolean equals(Object object){
+        if(this == object) {
+            return true;
+        }else if(object instanceof Person){// 类型是Person，我们才比较
+            // 进行向下转型，因为我们需要得到object的各个属性
+            Person p = (Person)object;
+            return (this.name.equals(p.name)) && (this.age == p.age) && (this.gender == p.gender);
+        }
+        return false;
+    }
+    public Person(String name, int age, char gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public char getGender() {
+        return gender;
+    }
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+}
+
+
+package polymorphic.object_;
+
+public class Equals_exercise02 {
+    public static void main(String[] args) {
+        Person2 p1 = new Person2();
+        p1.name = "jack";
+        Person2 p2 = new Person2();
+        p2.name = "jack";
+
+        System.out.println(p1 == p2);// F
+        System.out.println(p1.name.equals(p2.name));// T
+        System.out.println(p1.equals(p2));// F
+
+        String s1 = new String("asdf");
+        String s2 = new String("asdf");
+
+        System.out.println(s1.equals(s2));// T
+        System.out.println(s1 == s2);// F
+    }
+}
+class Person2{
+    public String name;
+}
+
+
+
+package polymorphic.object_;
+
+public class ToString {
+    public static void main(String[] args) {
+        Monster m1 = new Monster("小妖怪","巡山的",3000);
+        System.out.println(m1.toString());
+
+        System.out.println("=====当直接输出一个对象时，会默认调用toString方法=====");
+        // 没有重写toString方法时，调用父类的，没有再找，一直到Object类（输出 包类名+地址）
+        System.out.println(m1);//  输出 Monster{name='小妖怪', job='巡山的', salary=3000.0}
+    }
+}
+class Monster{
+    private  String name;
+    private String job;
+    private double salary;
+
+    // 使用快捷键生成 toString方法
+    @Override
+    public String toString() {
+        return "Monster{" +
+                "name='" + name + '\'' +
+                ", job='" + job + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+    public Monster(String name, String job, double salary) {
+        this.name = name;
+        this.job = job;
+        this.salary = salary;
+    }
+}
+
+
+package polymorphic.object_;
+
+public class ToString {
+    public static void main(String[] args) {
+        Monster m1 = new Monster("小妖怪","巡山的",3000);
+        System.out.println(m1.toString());
+
+        System.out.println("=====当直接输出一个对象时，会默认调用toString方法=====");
+        // 没有重写toString方法时，调用父类的，没有再找，一直到Object类（输出 包类名+地址）
+        System.out.println(m1);//  输出 Monster{name='小妖怪', job='巡山的', salary=3000.0}
+    }
+}
+class Monster{
+    private  String name;
+    private String job;
+    private double salary;
+
+    // 使用快捷键生成 toString方法
+    @Override
+    public String toString() {
+        return "Monster{" +
+                "name='" + name + '\'' +
+                ", job='" + job + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+    public Monster(String name, String job, double salary) {
+        this.name = name;
+        this.job = job;
+        this.salary = salary;
+    }
+}
